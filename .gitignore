@@ -1,0 +1,16 @@
+# Datos crudos descargados (se regeneran con el pipeline, no se versionan)
+data/raw/*
+!data/raw/.gitkeep
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Streamlit
+.streamlit/secrets.toml
+
+# Sistema
+.DS_Store
+Thumbs.db
