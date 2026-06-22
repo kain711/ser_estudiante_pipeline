@@ -22,6 +22,17 @@ import requests
 DATASET = "ser-estudiante"
 API_URL = f"https://www.datosabiertos.gob.ec/api/3/action/package_show?id={DATASET}"
 
+# El portal bloquea con 403 las peticiones que llegan con el User-Agent por
+# defecto de requests ("python-requests/x.x"). Con un User-Agent de navegador
+# normal lo deja pasar sin problema.
+HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+        "(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+    ),
+    "Accept": "application/json, */*;q=0.8",
+}
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RAW_DIR = os.path.join(BASE_DIR, "data", "raw")
 MANIFEST_PATH = os.path.join(BASE_DIR, "data", "processed", "manifest.json")
@@ -32,7 +43,7 @@ def obtener_metadata_remota() -> dict:
     """Consulta la API de CKAN y devuelve un dict {resource_id: info_recurso}
     solo para los recursos que nos interesan: CSV de resultados y ODS de diccionario.
     """
-    resp = requests.get(API_URL, timeout=30)
+    resp = requests.get(API_URL, headers=HEADERS, timeout=30)
     resp.raise_for_status()
     data = resp.json()
 
@@ -85,7 +96,7 @@ def descargar_recurso(resource_id: str, info: dict) -> str:
     destino = os.path.join(RAW_DIR, nombre_archivo)
 
     print(f"Descargando {info['nombre']} -> {nombre_archivo}")
-    resp = requests.get(info["url"], timeout=120)
+    resp = requests.get(info["url"], headers=HEADERS, timeout=120)
     resp.raise_for_status()
     with open(destino, "wb") as f:
         f.write(resp.content)
