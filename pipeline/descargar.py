@@ -44,6 +44,14 @@ def obtener_metadata_remota() -> dict:
     solo para los recursos que nos interesan: CSV de resultados y ODS de diccionario.
     """
     resp = requests.get(API_URL, headers=HEADERS, timeout=30)
+    if resp.status_code != 200:
+        # Diagnóstico: queremos ver SI es un bloqueo de WAF (Cloudflare/Imperva/Akamai)
+        # y de qué tipo, antes de decidir el siguiente paso.
+        print(f"--- DIAGNÓSTICO 403/error ---")
+        print(f"Status: {resp.status_code}")
+        print(f"Headers de respuesta: {dict(resp.headers)}")
+        print(f"Cuerpo (primeros 500 chars): {resp.text[:500]}")
+        print(f"------------------------------")
     resp.raise_for_status()
     data = resp.json()
 
