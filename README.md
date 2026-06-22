@@ -20,10 +20,10 @@ ser_estudiante_pipeline/
 ## Estado del proyecto
 
 - [x] Estructura del repo
-- [ ] Confirmar URLs de descarga estables en datosabiertos.gob.ec
-- [ ] Script de descarga con detección de cambios
-- [ ] Script de procesamiento (consolidado + dimensiones)
-- [ ] Workflow de GitHub Actions (cron mensual)
+- [x] Confirmar URLs de descarga estables en datosabiertos.gob.ec (API CKAN `package_show`, actualización anual confirmada)
+- [x] Script de descarga con detección de cambios (`pipeline/descargar.py`)
+- [x] Script de procesamiento (`pipeline/procesar.py`) — verificado contra los datos reales (222,103 filas, promedio INEV 687.62)
+- [x] Workflow de GitHub Actions (cron mensual + disparo manual) — `.github/workflows/pipeline.yml`
 - [ ] Dashboard Streamlit
 - [ ] Deploy en Streamlit Community Cloud
 
