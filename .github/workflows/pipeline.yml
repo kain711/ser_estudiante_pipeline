@@ -15,7 +15,9 @@ concurrency:
 
 jobs:
   pipeline:
-    runs-on: ubuntu-latest
+    # Self-hosted: corre en tu laptop (IP de casa), no en servidores de GitHub.
+    # El portal del INEVAL bloquea por IP/ASN los rangos de datacenter de GitHub-hosted.
+    runs-on: self-hosted
     steps:
       - name: Checkout del repo
         uses: actions/checkout@v4
@@ -26,13 +28,16 @@ jobs:
           python-version: "3.11"
 
       - name: Instalar dependencias
+        shell: bash
         run: pip install -r requirements.txt
 
       - name: Descargar y detectar cambios en la fuente
+        shell: bash
         run: python pipeline/descargar.py
 
       - name: Verificar si hubo cambios
         id: check
+        shell: bash
         run: |
           if [ -f data/raw/cambios_detectados.json ]; then
             echo "hubo_cambios=true" >> "$GITHUB_OUTPUT"
@@ -42,10 +47,12 @@ jobs:
 
       - name: Procesar datos (solo si hubo cambios)
         if: steps.check.outputs.hubo_cambios == 'true'
+        shell: bash
         run: python pipeline/procesar.py
 
       - name: Commit y push de los datos actualizados
         if: steps.check.outputs.hubo_cambios == 'true'
+        shell: bash
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
